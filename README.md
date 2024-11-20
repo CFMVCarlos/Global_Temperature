@@ -1,18 +1,33 @@
-# Global_Temperature by @CFMVCarlos
+# Global Temperature
 
-A program that request a map from MapBox and weather from OpenWeatherMap and displays the current temperature in a canvas. 
+This program requests a map from MapBox and weather data from OpenWeatherMap, displaying the current temperature on a canvas.
 
-You will need to register to:
+## Prerequisites
+
+You will need to register for:
 - [MapBox](https://www.mapbox.com/) 🗺
 - [OpenWeatherMap](https://openweathermap.org/) ☀
 
+## Setup
 
-First, after you created an account in Mapbox, go to "Account" under your profile and there you will find how to generate an access token. Copy and paste it to secret.json file.
+1. **MapBox Access Token**:
+    - Create an account on MapBox.
+    - Navigate to "Account" under your profile to generate an access token.
+    - Copy and paste the token into the `secret.json` file.
 
-Secondly, after signing in OpenWeatherMap, in the home page, you will find an "API keys" tab where you need to click to access the API key that you will need. Once again, copy and paste it to secret.json file.
+2. **OpenWeatherMap API Key**:
+    - Sign in to OpenWeatherMap.
+    - On the home page, click on the "API keys" tab to access your API key.
+    - Copy and paste the key into the `secret.json` file.
 
-Now that you have the API codes working, simply run the code with a live server extension. 
-You will have an **INPUT** box to type in the cities to receive the Weather Data and a **BUTTON** to freeze/unfreeze the cities you typed in.
+## Usage
 
-If you find any error or an find any improvement to be made, feel free to *pull-request*.
+Run the code using a live server extension. You will have an **INPUT** box to type in city names to receive weather data and a **BUTTON** to freeze/unfreeze the cities you entered.
 
+## Contributing
+
+If you encounter any errors or have suggestions for improvements, feel free to submit a *pull request*.
+
+## Author
+
+- [Carlos Valente](https://github.com/CFMVCarlos)
