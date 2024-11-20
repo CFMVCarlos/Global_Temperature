@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>8.6_p5.js_api_query_user_input</title>
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/p5@1.1.4/lib/p5.min.js"></script>
-		<script type="text/javascript" src="global_temp.js"></script>
-		<script type="text/javascript" src="secret.json"></script>
-		
-		<style>
-			body {
-				padding: 0;
-				margin: 0;
-				color:white;
-			}
-			
-			canvas {
-				vertical-align: top;
-			}
-		</style>
-	</head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>8.6_p5.js_api_query_user_input</title>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/p5@1.1.4/lib/p5.min.js"
+    ></script>
+    <script type="text/javascript" src="global_temp.js"></script>
+    <script type="text/javascript" src="secret.json"></script>
 
-	<body>
-		<p>City: <input id="city"/></p>
-	</body>
+    <style>
+      body {
+        padding: 0;
+        margin: 10em;
+        color: black;
+      }
+
+      canvas {
+        vertical-align: top;
+      }
+    </style>
+  </head>
+
+  <body>
+    <label for="city">City: </label>
+    <input type="text" id="city" name="city" value="London" />
+  </body>
 </html>

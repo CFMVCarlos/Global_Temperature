@@ -11,8 +11,8 @@ First, after you created an account in Mapbox, go to "Account" under your profil
 
 Secondly, after signing in OpenWeatherMap, in the home page, you will find an "API keys" tab where you need to click to access the API key that you will need. Once again, copy and paste it to secret.json file.
 
-Now that you have the API codes working, simply run the code. 
+Now that you have the API codes working, simply run the code with a live server extension. 
 You will have an **INPUT** box to type in the cities to receive the Weather Data and a **BUTTON** to freeze/unfreeze the cities you typed in.
 
-If you find any error or an improvement, feel free to *pull-request*.
+If you find any error or an find any improvement to be made, feel free to *pull-request*.
 

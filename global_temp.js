@@ -48,7 +48,7 @@ function setup() {
   button = createButton('Mark Locations');
 }
 
-function draw() {
+function draw() {	
 	//Changes saveFlag variable
   button.mousePressed(changeFlag);
 
@@ -81,7 +81,7 @@ function draw() {
     
 		//Drawing
     ellipse(x, y, size, size)
-    text(temp + 'ºC', x + size, y - size)
+    text(temp + 'ï¿½C', x + size, y - size)
     text(weather.name, x - 2*size, y + 2*size)
   }
 }
