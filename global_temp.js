@@ -29,7 +29,7 @@ async function firstLoad(data) {
 	secret = data;
 
 	let map_url = `https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/${clon},${clat},${zoom},0,0/1024x512?access_token=${secret.MapAPI}`;
-	map = await loadImage(map_url);
+	if (typeof loadImage !== 'undefined') map = await loadImage(map_url);
 
 	weather_apiQ = 'https://api.openweathermap.org/data/2.5/weather?q=';
 	weather_apiID = `&APPID=${secret.WeatherAPI}`;
@@ -46,12 +46,11 @@ function setup() {
 	input.changed(weatherAsk)
 	
   button = createButton('Mark Locations');
-}
-
-function draw() {	
 	//Changes saveFlag variable
   button.mousePressed(changeFlag);
+}
 
+function draw() {
 	//New center is the center of canvas
   translate(width / 2, height / 2);
   imageMode(CENTER);
@@ -81,14 +80,14 @@ function draw() {
     
 		//Drawing
     ellipse(x, y, size, size)
-    text(temp + '�C', x + size, y - size)
+    text(temp + '°C', x + size, y - size)
     text(weather.name, x - 2*size, y + 2*size)
   }
 }
 
 function weatherAsk() {
 	//Creates the Weather URL
-  let weather_url = weather_apiQ + input.value() + weather_apiID + weather_units;
+  let weather_url = weather_apiQ + encodeURIComponent(input.value()) + weather_apiID + weather_units;
   loadJSON(weather_url, data => weather = data);
 }
 
@@ -100,17 +99,32 @@ function changeFlag() {
 	saveFlag = !saveFlag;
 }
 
+// Get scaling factor for Mercator projection
+function getMercatorScalingFactor() {
+	return (256 / PI) * pow(2, zoom);
+}
+
 //Mercator X-coordinate
 function mercX(lon) {
-	let a = (256 / PI) * pow(2, zoom);
+	let a = getMercatorScalingFactor();
 	let b = radians(lon) + PI;
 	return a * b;
 }
 
 //Mercator Y-coordinate
 function mercY(lat) {
-	let a = (256 / PI) * pow(2, zoom);
+	let a = getMercatorScalingFactor();
 	let b = tan(PI / 4 + radians(lat) / 2);
 	let c = PI - log(b);
 	return a * c;
+}
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    setup,
+    weatherAsk,
+    firstLoad,
+    getWeather: () => weather,
+    setInput: (val) => { input = val; }
+  };
 }
