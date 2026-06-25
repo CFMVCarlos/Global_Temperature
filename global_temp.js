@@ -80,7 +80,7 @@ function draw() {
     
 		//Drawing
     ellipse(x, y, size, size)
-    text(temp + '�C', x + size, y - size)
+    text(temp + '°C', x + size, y - size)
     text(weather.name, x - 2*size, y + 2*size)
   }
 }
