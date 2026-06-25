@@ -46,12 +46,11 @@ function setup() {
 	input.changed(weatherAsk)
 	
   button = createButton('Mark Locations');
-}
-
-function draw() {	
 	//Changes saveFlag variable
   button.mousePressed(changeFlag);
+}
 
+function draw() {
 	//New center is the center of canvas
   translate(width / 2, height / 2);
   imageMode(CENTER);
