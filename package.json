@@ -1,0 +1,11 @@
+{
+  "name": "global-temperature-tests",
+  "version": "1.0.0",
+  "description": "Tests for the global_temp.js file.",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
+}
