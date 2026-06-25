@@ -1,0 +1,25 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "This program requests a map from MapBox and weather data from OpenWeatherMap, displaying the current temperature on a canvas.",
+  "main": "global_temp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CFMVCarlos/Global_Temperature.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CFMVCarlos/Global_Temperature/issues"
+  },
+  "homepage": "https://github.com/CFMVCarlos/Global_Temperature#readme",
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1"
+  }
+}
