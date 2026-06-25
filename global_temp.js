@@ -88,7 +88,7 @@ function draw() {
 
 function weatherAsk() {
 	//Creates the Weather URL
-  let weather_url = weather_apiQ + input.value() + weather_apiID + weather_units;
+  let weather_url = weather_apiQ + encodeURIComponent(input.value()) + weather_apiID + weather_units;
   loadJSON(weather_url, data => weather = data);
 }
 
