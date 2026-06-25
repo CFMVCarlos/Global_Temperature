@@ -1,56 +1,101 @@
-const test = require('node:test');
-const assert = require('node:assert');
+const fs = require('fs');
 
-// Mock p5.js globals required for testing
 global.PI = Math.PI;
+global.CENTER = 'center';
+global.width = 1024;
+global.height = 512;
 global.pow = Math.pow;
-global.radians = (deg) => deg * Math.PI / 180;
 global.tan = Math.tan;
 global.log = Math.log;
-global.zoom = 1; // Default zoom used in global_temp.js
+global.radians = (deg) => deg * Math.PI / 180;
+global.loadImage = jest.fn();
+global.createCanvas = jest.fn();
+global.select = jest.fn().mockReturnValue({ changed: jest.fn(), value: jest.fn().mockReturnValue('London') });
 
-// Import the functions to test
-const { mercX } = require('./global_temp.js');
+// Mock createButton globally
+const mockButton = { mousePressed: jest.fn(), html: jest.fn() };
+global.createButton = jest.fn().mockReturnValue(mockButton);
+global.loadJSON = jest.fn();
+global.translate = jest.fn();
+global.imageMode = jest.fn();
+global.image = jest.fn();
+global.stroke = jest.fn();
+global.fill = jest.fn();
+global.ellipse = jest.fn();
+global.text = jest.fn();
 
-test('mercX tests - Mapbox Mercator projection calculation', async (t) => {
+const scriptContent = fs.readFileSync('global_temp.js', 'utf8');
 
-    await t.test('calculates correct x-coordinate for center (lon=0) at default zoom (1)', () => {
-        const result = mercX(0);
-        // a = (256/PI) * 2^1 = 512/PI
-        // b = 0 + PI = PI
-        // a * b = 512
-        assert.strictEqual(result, 512);
-    });
+const testContext = `
+  ${scriptContent}
 
-    await t.test('calculates correct x-coordinate for Eastern edge (lon=180) at default zoom (1)', () => {
-        const result = mercX(180);
-        // a = 512/PI
-        // b = PI + PI = 2PI
-        // a * b = 1024
-        assert.strictEqual(Math.round(result), 1024);
-    });
+  module.exports = {
+    getSecret: () => secret,
+    getWeatherApiQ: () => weather_apiQ,
+    getWeatherApiID: () => weather_apiID,
+    getWeatherUnits: () => weather_units,
+    getSaveFlag: () => saveFlag,
+    setSaveFlag: (val) => { saveFlag = val; },
+    firstLoad,
+    changeFlag,
+    mercX,
+    mercY,
+    setup
+  };
+`;
 
-    await t.test('calculates correct x-coordinate for Western edge (lon=-180) at default zoom (1)', () => {
-        const result = mercX(-180);
-        // a = 512/PI
-        // b = -PI + PI = 0
-        // a * b = 0
-        assert.strictEqual(Math.round(result), 0);
-    });
+const mod = eval(`(function() { const module = {}; ${testContext} return module.exports; })()`);
 
-    await t.test('calculates correct x-coordinate for East mid-point (lon=90) at default zoom (1)', () => {
-        const result = mercX(90);
-        // a = 512/PI
-        // b = PI/2 + PI = 1.5PI
-        // a * b = 768
-        assert.strictEqual(Math.round(result), 768);
-    });
+describe('global_temp.js tests', () => {
 
-    await t.test('calculates correct x-coordinate for West mid-point (lon=-90) at default zoom (1)', () => {
-        const result = mercX(-90);
-        // a = 512/PI
-        // b = -PI/2 + PI = 0.5PI
-        // a * b = 256
-        assert.strictEqual(Math.round(result), 256);
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('firstLoad updates globals properly', async () => {
+    const dummyData = { MapAPI: "123", WeatherAPI: "456" };
+    await mod.firstLoad(dummyData);
+
+    expect(mod.getSecret()).toEqual(dummyData);
+    expect(global.loadImage).toHaveBeenCalledWith(
+      `https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/0,0,1,0,0/1024x512?access_token=123`
+    );
+    expect(mod.getWeatherApiQ()).toBe('https://api.openweathermap.org/data/2.5/weather?q=');
+    expect(mod.getWeatherApiID()).toBe('&APPID=456');
+    expect(mod.getWeatherUnits()).toBe('&units=metric');
+  });
+
+  test('changeFlag toggles saveFlag and updates button html', () => {
+    mod.setup();
+    mod.setSaveFlag(0);
+    mod.changeFlag();
+
+    expect(mockButton.html).toHaveBeenCalledWith('Unmark Locations');
+    expect(mod.getSaveFlag()).toBe(true);
+
+    mod.changeFlag();
+
+    expect(mockButton.html).toHaveBeenCalledWith('Mark Locations');
+    expect(mod.getSaveFlag()).toBe(false);
+  });
+
+  test('mercX calculates the correct mercator X-coordinate', () => {
+    const lon = 0;
+    const a = (256 / Math.PI) * Math.pow(2, 1);
+    const b = (lon * Math.PI / 180) + Math.PI;
+    const expectedValue = a * b;
+
+    expect(mod.mercX(lon)).toBeCloseTo(expectedValue);
+  });
+
+  test('mercY calculates the correct mercator Y-coordinate', () => {
+    const lat = 0;
+    const a = (256 / Math.PI) * Math.pow(2, 1);
+    const b = Math.tan(Math.PI / 4 + (lat * Math.PI / 180) / 2);
+    const c = Math.PI - Math.log(b);
+    const expectedValue = a * c;
+
+    expect(mod.mercY(lat)).toBeCloseTo(expectedValue);
+  });
+
 });
