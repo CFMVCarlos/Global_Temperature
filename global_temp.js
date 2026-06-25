@@ -100,16 +100,21 @@ function changeFlag() {
 	saveFlag = !saveFlag;
 }
 
+// Get scaling factor for Mercator projection
+function getMercatorScalingFactor() {
+	return (256 / PI) * pow(2, zoom);
+}
+
 //Mercator X-coordinate
 function mercX(lon) {
-	let a = (256 / PI) * pow(2, zoom);
+	let a = getMercatorScalingFactor();
 	let b = radians(lon) + PI;
 	return a * b;
 }
 
 //Mercator Y-coordinate
 function mercY(lat) {
-	let a = (256 / PI) * pow(2, zoom);
+	let a = getMercatorScalingFactor();
 	let b = tan(PI / 4 + radians(lat) / 2);
 	let c = PI - log(b);
 	return a * c;
