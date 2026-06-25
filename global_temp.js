@@ -28,8 +28,12 @@ let saveFlag = 0;
 async function firstLoad(data) {
 	secret = data;
 
-	let map_url = `https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/${clon},${clat},${zoom},0,0/1024x512?access_token=${secret.MapAPI}`;
-	map = await loadImage(map_url);
+	try {
+		let map_url = `https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/${clon},${clat},${zoom},0,0/1024x512?access_token=${secret.MapAPI}`;
+		map = await loadImage(map_url);
+	} catch (error) {
+		console.error("Failed to load map image:", error);
+	}
 
 	weather_apiQ = 'https://api.openweathermap.org/data/2.5/weather?q=';
 	weather_apiID = `&APPID=${secret.WeatherAPI}`;
@@ -113,4 +117,8 @@ function mercY(lat) {
 	let b = tan(PI / 4 + radians(lat) / 2);
 	let c = PI - log(b);
 	return a * c;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { firstLoad };
 }
