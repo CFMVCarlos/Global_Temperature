@@ -4,7 +4,7 @@
   "description": "This program requests a map from MapBox and weather data from OpenWeatherMap, displaying the current temperature on a canvas.",
   "main": "global_temp.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,11 @@
   "devDependencies": {
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}
   "dependencies": {
     "playwright": "^1.61.1"
   }

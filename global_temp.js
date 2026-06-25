@@ -29,7 +29,7 @@ async function firstLoad(data) {
 	secret = data;
 
 	let map_url = `https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/${clon},${clat},${zoom},0,0/1024x512?access_token=${secret.MapAPI}`;
-	map = await loadImage(map_url);
+	if (typeof loadImage !== 'undefined') map = await loadImage(map_url);
 
 	weather_apiQ = 'https://api.openweathermap.org/data/2.5/weather?q=';
 	weather_apiID = `&APPID=${secret.WeatherAPI}`;
@@ -119,6 +119,12 @@ function mercY(lat) {
 	return a * c;
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { mercX, mercY };
+if (typeof module !== 'undefined') {
+  module.exports = {
+    setup,
+    weatherAsk,
+    firstLoad,
+    getWeather: () => weather,
+    setInput: (val) => { input = val; }
+  };
 }
