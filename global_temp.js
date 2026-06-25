@@ -113,3 +113,7 @@ function mercY(lat) {
 	let c = PI - log(b);
 	return a * c;
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { mercX, mercY };
+}
