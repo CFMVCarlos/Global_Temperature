@@ -115,6 +115,7 @@ describe('global_temp.js tests', () => {
   });
 
   test('changeFlag toggles saveFlag and updates button html', () => {
+    global.loadJSON = jest.fn();
     mod.setup();
     mod.setSaveFlag(0);
     mod.changeFlag();
