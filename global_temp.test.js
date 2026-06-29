@@ -45,6 +45,8 @@ describe('weatherAsk', () => {
     expect(weatherState.name).toBe('TestCity');
     expect(weatherState.main.temp).toBe(20);
   });
+});
+
 const fs = require('fs');
 
 global.PI = Math.PI;
@@ -113,6 +115,7 @@ describe('global_temp.js tests', () => {
   });
 
   test('changeFlag toggles saveFlag and updates button html', () => {
+    global.loadJSON = jest.fn();
     mod.setup();
     mod.setSaveFlag(0);
     mod.changeFlag();

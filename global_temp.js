@@ -119,9 +119,16 @@ function changeFlag() {
 	saveFlag = !saveFlag;
 }
 
+let _cachedZoom = null;
+let _cachedScalingFactor = null;
+
 // Get scaling factor for Mercator projection
 function getMercatorScalingFactor() {
-	return (256 / PI) * pow(2, zoom);
+  if (zoom !== _cachedZoom) {
+    _cachedZoom = zoom;
+    _cachedScalingFactor = (256 / PI) * pow(2, zoom);
+  }
+	return _cachedScalingFactor;
 }
 
 //Mercator X-coordinate
