@@ -1,0 +1,3 @@
+## 2026-06-26 - Memoize Mercator Scaling Factor
+**Learning:** `draw()` function is called 60 times a second by p5.js, and recalculating constant scaling factors involving computationally expensive operations like `Math.pow()` and `Math.log()` causes unnecessary overhead per frame. The scaling factor only depends on `zoom`, which rarely changes compared to the frame rate.
+**Action:** When working with p5.js `draw()`, identify and memoize computations based on slowly changing variables (like zoom or coordinate bounds) outside the tight loop. Cache results instead of recalculating them from scratch every frame.

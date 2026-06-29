@@ -99,9 +99,17 @@ function changeFlag() {
 	saveFlag = !saveFlag;
 }
 
+// Variables to memoize Mercator scaling factor
+let cachedZoom;
+let cachedScalingFactor;
+
 // Get scaling factor for Mercator projection
 function getMercatorScalingFactor() {
-	return (256 / PI) * pow(2, zoom);
+	if (zoom !== cachedZoom) {
+		cachedScalingFactor = (256 / PI) * pow(2, zoom);
+		cachedZoom = zoom;
+	}
+	return cachedScalingFactor;
 }
 
 //Mercator X-coordinate
