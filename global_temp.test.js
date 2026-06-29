@@ -45,6 +45,7 @@ describe('weatherAsk', () => {
     expect(weatherState.name).toBe('TestCity');
     expect(weatherState.main.temp).toBe(20);
   });
+});
 const fs = require('fs');
 
 global.PI = Math.PI;
@@ -74,6 +75,7 @@ global.text = jest.fn();
 const scriptContent = fs.readFileSync('global_temp.js', 'utf8');
 
 const testContext = `
+  const loadJSON = global.loadJSON;
   ${scriptContent}
 
   module.exports = {

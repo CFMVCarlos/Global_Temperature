@@ -100,8 +100,15 @@ function changeFlag() {
 }
 
 // Get scaling factor for Mercator projection
+let lastZoom = null;
+let cachedScalingFactor = null;
+
 function getMercatorScalingFactor() {
-	return (256 / PI) * pow(2, zoom);
+	if (zoom !== lastZoom) {
+		cachedScalingFactor = (256 / PI) * pow(2, zoom);
+		lastZoom = zoom;
+	}
+	return cachedScalingFactor;
 }
 
 //Mercator X-coordinate
