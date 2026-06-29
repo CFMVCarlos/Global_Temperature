@@ -1,0 +1,3 @@
+## 2026-06-25 - Caching expensive canvas rendering map projections
+**Learning:** Continuous rendering loops (like `draw()` in `p5.js`, running 60fps) are extremely sensitive to mathematical operations. Re-calculating Geographic Mercator Projections (`mercX`, `mercY`) which use `pow()`, `tan()`, and `log()` causes significant CPU overhead and can slow down the framerate, especially if the underlying map coordinates haven't changed.
+**Action:** When working with canvas APIs and repeated draw functions, always cache coordinate transforms (or any costly calculations) using a state object that monitors when inputs (`zoom`, `weather`, geographic center) actually change, only triggering recalculations on updates rather than on every frame tick.
