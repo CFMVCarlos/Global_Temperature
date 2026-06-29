@@ -25,6 +25,9 @@ let zoom = 1;
 //Allows to freeze all locations asked
 let saveFlag = 0;
 
+// Cache for expensive mercator calculations
+let cachedCoords = { weather: null, zoom: null, clon: null, clat: null, x: null, y: null };
+
 async function firstLoad(data) {
 	secret = data;
 
@@ -66,12 +69,29 @@ function draw() {
     let lat = weather.coord.lat;
 		let temp = weather.main.temp
 
+    let x, y;
+    // Check if we can reuse cached coordinates
+    if (cachedCoords.weather === weather &&
+        cachedCoords.zoom === zoom &&
+        cachedCoords.clon === clon &&
+        cachedCoords.clat === clat) {
+      x = cachedCoords.x;
+      y = cachedCoords.y;
+    } else {
+		  //Translate the given coordinates into mercator coordinates
+      let cx = mercX(clon);
+      let cy = mercY(clat);
+      x = mercX(lon) - cx;
+      y = mercY(lat) - cy;
 
-		//Translate the given coordinates into mercator coordinates 
-    let cx = mercX(clon);
-    let cy = mercY(clat);
-    let x = mercX(lon) - cx;
-    let y = mercY(lat) - cy;
+      // Update cache
+      cachedCoords.weather = weather;
+      cachedCoords.zoom = zoom;
+      cachedCoords.clon = clon;
+      cachedCoords.clat = clat;
+      cachedCoords.x = x;
+      cachedCoords.y = y;
+    }
 	
 		//Drawing style
 		let size = 6
