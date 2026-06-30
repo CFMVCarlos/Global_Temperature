@@ -3,9 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>8.6_p5.js_api_query_user_input</title>
+    <!-- 🛡️ Security Enhancement: Added Content Security Policy (CSP) to restrict resource origins -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; connect-src 'self' https://api.openweathermap.org https://api.mapbox.com; img-src 'self' https://api.mapbox.com data: blob:; style-src 'self' 'unsafe-inline';" />
+    <!-- 🛡️ Security Enhancement: Added Subresource Integrity (SRI) to prevent compromised CDN scripts -->
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/p5@1.1.4/lib/p5.min.js"
+      integrity="sha384-kD+46BBjLPZUv7dVqygwS60FXdXiTOhzkehNBp/XrD2QWRmvcBt8im3UcaN8i/Ru"
+      crossorigin="anonymous"
     ></script>
     <script type="text/javascript" src="global_temp.js"></script>
 
