@@ -1,0 +1,4 @@
+## 2026-06-30 - Add Content Security Policy and Subresource Integrity
+**Vulnerability:** Missing Content Security Policy (CSP) and Subresource Integrity (SRI) for the CDN script. This left the application vulnerable to Cross-Site Scripting (XSS) and compromised CDN risks.
+**Learning:** Adding CSP restricts the sources from which resources can be loaded. In a project loading external dependencies via CDN, SRI hashes provide an essential check against tampering. Because `secret.json` intentionally contains dummy or malformed data in this repository structure (for `npm test` environments), Playwright tests expect some Fetch or JSON syntax errors which are normal here, but the tests were not the focus of this security update.
+**Prevention:** Always implement a strict CSP by default, ensuring all external scripts also include the proper `integrity` and `crossorigin` attributes.
