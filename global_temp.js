@@ -125,7 +125,6 @@ let cachedScalingFactor;
 
 // Get scaling factor for Mercator projection
 let lastZoom = null;
-let cachedScalingFactor = null;
 
 function getMercatorScalingFactor() {
 	if (zoom !== lastZoom) {
