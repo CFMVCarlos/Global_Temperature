@@ -3,9 +3,9 @@
  * while bridging to the modern refactored architecture.
  */
 
-// We mock the p5.js globals that the tests expect to exist, or map them to our new util.
-const apiService = require('./src/services/api.js');
-const { mercX, mercY } = require('./src/utils/math.js');
+const path = require('path');
+const apiService = require(path.resolve(__dirname, 'src/services/api.js'));
+const { mercX, mercY } = require(path.resolve(__dirname, 'src/utils/math.js'));
 
 // State mappings for legacy tests
 let secret;
