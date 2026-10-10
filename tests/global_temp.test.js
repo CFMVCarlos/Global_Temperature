@@ -1,4 +1,4 @@
-const { weatherAsk, firstLoad, getWeather, setInput } = require('./global_temp');
+const { weatherAsk, firstLoad, getWeather, setInput, changeFlag, mercX, mercY } = require('../src/global_temp');
 
 describe('weatherAsk', () => {
   beforeEach(() => {
@@ -69,31 +69,26 @@ global.imageMode = jest.fn();
 global.image = jest.fn();
 global.stroke = jest.fn();
 global.fill = jest.fn();
-global.ellipse = jest.fn();
-global.text = jest.fn();
-
-const scriptContent = fs.readFileSync('global_temp.js', 'utf8');
+const path = require('path');
+const scriptContent = fs.readFileSync(path.resolve(__dirname, '../src/global_temp.js'), 'utf8');
 
 const testContext = `
   const loadJSON = global.loadJSON;
   ${scriptContent}
 
-  module.exports = {
-    getSecret: () => secret,
-    getWeatherApiQ: () => weather_apiQ,
-    getWeatherApiID: () => weather_apiID,
-    getWeatherUnits: () => weather_units,
-    getSaveFlag: () => saveFlag,
-    setSaveFlag: (val) => { saveFlag = val; },
-    firstLoad,
-    changeFlag,
-    mercX,
-    mercY,
-    setup
-  };
+  // Extend the existing module.exports that the script creates
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports.getSecret = () => secret;
+    module.exports.getWeatherApiQ = () => weather_apiQ;
+    module.exports.getWeatherApiID = () => weather_apiID;
+    module.exports.getWeatherUnits = () => weather_units;
+    module.exports.getSaveFlag = () => saveFlag;
+    module.exports.setSaveFlag = (val) => { saveFlag = val; };
+  }
 `;
 
-const mod = eval(`(function() { const module = {}; ${testContext} return module.exports; })()`);
+const srcDir = path.resolve(__dirname, '../src');
+const mod = eval(`(function(require, __dirname) { const module = {}; ${testContext} return module.exports; })(require, "${srcDir}")`);
 
 describe('global_temp.js tests', () => {
 

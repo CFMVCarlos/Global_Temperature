@@ -1,34 +1,143 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>8.6_p5.js_api_query_user_input</title>
-    <!-- 🛡️ Security Enhancement: Added Content Security Policy (CSP) to restrict resource origins -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; connect-src 'self' https://api.openweathermap.org https://api.mapbox.com; img-src 'self' https://api.mapbox.com data: blob:; style-src 'self' 'unsafe-inline';" />
-    <!-- 🛡️ Security Enhancement: Added Subresource Integrity (SRI) to prevent compromised CDN scripts -->
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/p5@1.1.4/lib/p5.min.js"
-      integrity="sha384-kD+46BBjLPZUv7dVqygwS60FXdXiTOhzkehNBp/XrD2QWRmvcBt8im3UcaN8i/Ru"
-      crossorigin="anonymous"
-    ></script>
-    <script type="text/javascript" src="global_temp.js"></script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Temperature | Modern Edition</title>
 
-    <style>
-      body {
-        padding: 0;
-        margin: 10em;
-        color: black;
+  <!-- Content Security Policy: Refined to allow Tailwind CDN and API calls -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
+    style-src 'self' 'unsafe-inline';
+    connect-src 'self' https://api.openweathermap.org https://api.mapbox.com;
+    img-src 'self' https://api.mapbox.com data: blob:;
+  " />
+
+  <!-- Tailwind CSS via CDN for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom config for strict design system -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#0ea5e9', // Tailwind Sky 500
+            'brand-dark': '#0284c7', // Tailwind Sky 600
+            'brand-light': '#38bdf8', // Tailwind Sky 400
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          }
+        }
       }
+    }
+  </script>
 
-      canvas {
-        vertical-align: top;
-      }
-    </style>
-  </head>
+  <style>
+    /* Custom CSS to prevent scroll-bars on body and define toast animations */
+    body {
+      background-color: #f8fafc; /* slate-50 */
+    }
 
-  <body>
-    <label for="city">City: </label>
-    <input type="text" id="city" name="city" value="London" />
-  </body>
+    .toast-enter {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    .toast-enter-active {
+      transform: translateY(0);
+      opacity: 1;
+      transition: all 300ms ease-out;
+    }
+    .toast-exit {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast-exit-active {
+      transform: translateY(100%);
+      opacity: 0;
+      transition: all 300ms ease-in;
+    }
+
+    /* Skeleton Loading Animation */
+    @keyframes pulse-bg {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .5; }
+    }
+    .skeleton {
+      animation: pulse-bg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      background-color: #e2e8f0; /* slate-200 */
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 font-sans antialiased flex flex-col items-center pt-10 px-4 pb-20">
+
+  <main class="w-full max-w-5xl flex flex-col gap-8 items-center">
+
+    <!-- Header Section -->
+    <header class="text-center w-full max-w-2xl">
+      <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-3 shadow-sm inline-block rounded-xl">Global Temperature Map</h1>
+      <p class="text-lg text-slate-500">Query real-time weather data and view it projected onto a stunning dark map.</p>
+    </header>
+
+    <!-- Controls Section -->
+    <section class="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 w-full max-w-2xl border border-slate-100 flex flex-col sm:flex-row gap-4 items-end transition-all">
+
+      <div class="flex-1 w-full">
+        <label for="city-input" class="block text-sm font-semibold text-slate-700 mb-2">City Name</label>
+        <div class="relative">
+          <input type="text" id="city-input" value="London" placeholder="Enter a city..."
+            class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-brand focus:border-brand block p-3 outline-none transition-shadow disabled:opacity-50" />
+
+          <!-- Loading Spinner (Hidden by default) -->
+          <div id="loading-spinner" class="absolute inset-y-0 right-0 flex items-center pr-3 hidden">
+            <svg class="animate-spin h-5 w-5 text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <button id="search-btn" class="w-full sm:w-auto px-6 py-3 bg-brand hover:bg-brand-dark text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all focus:ring-4 focus:ring-brand-light/50 outline-none active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+        Search
+      </button>
+
+      <button id="toggle-btn" class="w-full sm:w-auto px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg shadow-md transition-all focus:ring-4 focus:ring-slate-300 outline-none active:scale-95">
+        Freeze Pins
+      </button>
+
+    </section>
+
+    <!-- Canvas Container -->
+    <section class="relative w-full rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/20 bg-slate-800 flex justify-center items-center group border border-slate-700" style="width: 1024px; height: 512px; max-width: 100%;">
+
+      <!-- Skeleton Loading Background -->
+      <div id="map-skeleton" class="absolute inset-0 skeleton flex items-center justify-center flex-col z-0">
+         <span class="text-slate-400 font-medium mb-2">Loading Map...</span>
+      </div>
+
+      <!-- Error State for Map (Hidden by default) -->
+      <div id="map-error" class="absolute inset-0 bg-slate-900/90 flex flex-col items-center justify-center z-10 hidden backdrop-blur-sm p-6 text-center">
+        <svg class="w-16 h-16 text-rose-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <h3 class="text-xl font-bold text-white mb-2">Map Unavailable</h3>
+        <p class="text-slate-300 max-w-md" id="map-error-msg">Failed to load MapBox map. Check API keys in secret.json.</p>
+      </div>
+
+      <canvas id="map-canvas" width="1024" height="512" class="relative z-10 opacity-0 transition-opacity duration-500 w-full h-auto max-w-full object-contain origin-top-left"></canvas>
+    </section>
+
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+  <!-- Application Logic -->
+  <script src="./src/utils/math.js"></script>
+  <script src="./src/services/api.js"></script>
+  <script src="./src/components/toast.js"></script>
+  <script src="./src/app.js"></script>
+
+</body>
 </html>
