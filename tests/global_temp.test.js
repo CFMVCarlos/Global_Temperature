@@ -1,4 +1,4 @@
-const { weatherAsk, firstLoad, getWeather, setInput, changeFlag, mercX, mercY } = require('../global_temp');
+const { weatherAsk, firstLoad, getWeather, setInput, changeFlag, mercX, mercY } = require('../src/global_temp');
 
 describe('weatherAsk', () => {
   beforeEach(() => {
@@ -69,9 +69,8 @@ global.imageMode = jest.fn();
 global.image = jest.fn();
 global.stroke = jest.fn();
 global.fill = jest.fn();
-global.ellipse = jest.fn();
 const path = require('path');
-const scriptContent = fs.readFileSync(path.resolve(__dirname, '../global_temp.js'), 'utf8');
+const scriptContent = fs.readFileSync(path.resolve(__dirname, '../src/global_temp.js'), 'utf8');
 
 const testContext = `
   const loadJSON = global.loadJSON;
@@ -88,8 +87,8 @@ const testContext = `
   }
 `;
 
-const rootDir = path.resolve(__dirname, '..');
-const mod = eval(`(function(require, __dirname) { const module = {}; ${testContext} return module.exports; })(require, "${rootDir}")`);
+const srcDir = path.resolve(__dirname, '../src');
+const mod = eval(`(function(require, __dirname) { const module = {}; ${testContext} return module.exports; })(require, "${srcDir}")`);
 
 describe('global_temp.js tests', () => {
 

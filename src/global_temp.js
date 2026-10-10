@@ -4,8 +4,8 @@
  */
 
 const path = require('path');
-const apiService = require(path.resolve(__dirname, 'src/services/api.js'));
-const { mercX, mercY } = require(path.resolve(__dirname, 'src/utils/math.js'));
+const apiService = require(path.resolve(__dirname, 'services/api.js'));
+const { mercX, mercY } = require(path.resolve(__dirname, 'utils/math.js'));
 
 // State mappings for legacy tests
 let secret;

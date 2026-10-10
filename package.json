@@ -2,7 +2,7 @@
   "name": "app",
   "version": "1.0.0",
   "description": "This program requests a map from MapBox and weather data from OpenWeatherMap, displaying the current temperature on a canvas.",
-  "main": "global_temp.js",
+  "main": "src/global_temp.js",
   "scripts": {
     "test": "jest"
   },
