@@ -78,22 +78,18 @@ const testContext = `
   const loadJSON = global.loadJSON;
   ${scriptContent}
 
-  module.exports = {
-    getSecret: () => secret,
-    getWeatherApiQ: () => weather_apiQ,
-    getWeatherApiID: () => weather_apiID,
-    getWeatherUnits: () => weather_units,
-    getSaveFlag: () => saveFlag,
-    setSaveFlag: (val) => { saveFlag = val; },
-    firstLoad,
-    changeFlag,
-    mercX,
-    mercY,
-    setup
-  };
+  // Extend the existing module.exports that the script creates
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports.getSecret = () => secret;
+    module.exports.getWeatherApiQ = () => weather_apiQ;
+    module.exports.getWeatherApiID = () => weather_apiID;
+    module.exports.getWeatherUnits = () => weather_units;
+    module.exports.getSaveFlag = () => saveFlag;
+    module.exports.setSaveFlag = (val) => { saveFlag = val; };
+  }
 `;
 
-const mod = eval(`(function() { const module = {}; ${testContext} return module.exports; })()`);
+const mod = eval(`(function(require) { const module = {}; ${testContext} return module.exports; })(require)`);
 
 describe('global_temp.js tests', () => {
 
